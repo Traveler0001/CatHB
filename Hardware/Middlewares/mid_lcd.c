@@ -78,7 +78,7 @@ HAL_StatusTypeDef mid_LcdFill(uint16_t *xsta, uint16_t *ysta, uint16_t *xend, ui
     drv_LcdAddressSet(xsta, ysta, xend, yend);
 
     uint32_t pixel_num = 0;
-    pixel_num          = (xend - xsta + 1) * (yend - ysta + 1);
+    pixel_num          = (*xend - *xsta + 1) * (*yend - *ysta + 1);
     uint8_t color_high = (uint8_t)(*color >> 8);
     uint8_t color_low  = (uint8_t)*color;
 
