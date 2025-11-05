@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "Application/app_lcd.h"
 #include "cmsis_os.h"
 #include "dma.h"
 #include "fatfs.h"
@@ -115,14 +116,16 @@ int main(void) {
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   /**** 关闭可控硅 ****/
-  HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+  // HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
   /**** LED灯熄灭 ****/
-  HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+  // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+  // HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
   /**** 启动PWM输出 ****/
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);        // 启动 TIM3 通道1 的 PWM
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0); // 设置通道1的Pulse为300
+  // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);        // 启动 TIM3 通道1 的 PWM
+  // __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0); // 设置通道1的Pulse为300
   /****  ****/
+  app_Init();
+  app_LcdClear();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -137,6 +140,8 @@ int main(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
+    app_LcdTest();
+    HAL_Delay(500);
     // static uint8_t toggle = 0;
     // HAL_GPIO_TogglePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin);
     // HAL_Delay(500);

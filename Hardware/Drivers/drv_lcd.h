@@ -9,9 +9,9 @@
 #define USE_HORIZONTAL 3  //设置横屏或者竖屏显示 0或1为竖屏 2或3为横屏
 
 typedef struct{
-    uint16_t lcdW;
-    uint16_t lcdH;
-    uint16_t clearColor;
+    uint16_t lcdW;          // LCD显示屏宽度(像素)
+    uint16_t lcdH;          // LCD显示屏高度(像素)
+    uint16_t clearColor;    // 清屏默认颜色
 } LCD_INFO;
 
 typedef struct{
@@ -20,11 +20,11 @@ typedef struct{
 }LCD_MODE;
 
 typedef struct{
-    LCD_INFO lcdInfo;
-    LCD_MODE lcdMode;
+    LCD_INFO lcdInfo;   // LCD显示屏相关信息设置
+    LCD_MODE lcdMode;   // LCD spi模式相关设置
 } LCD_Handle;
 
-extern  LCD_Handle lcd;
+extern  LCD_Handle lcd; // LCD操作句柄
 
 // void LCD_GPIO_Init(void);//初始化GPIO
 HAL_StatusTypeDef drv_LcdWRData8(uint8_t dat);//写入一个字节

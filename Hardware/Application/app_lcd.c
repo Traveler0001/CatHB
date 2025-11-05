@@ -15,7 +15,6 @@ HAL_StatusTypeDef app_LcdShowUI(uint16_t x, uint16_t y, uint16_t color)
 HAL_StatusTypeDef app_LcdClear(void)
 {
     uint16_t xsta = 0, ysta = 0;
-    lcd.lcdInfo.clearColor = WHITE;
     return mid_LcdFill(&xsta, &ysta, &lcd.lcdInfo.lcdW, &lcd.lcdInfo.lcdH, &lcd.lcdInfo.clearColor);
 }
 
@@ -27,6 +26,11 @@ HAL_StatusTypeDef app_LcdFill(uint16_t xsta, uint16_t ysta, uint16_t xend, uint1
 
 HAL_StatusTypeDef app_Init(void)
 {
+    lcd.lcdInfo.lcdH = 240;
+    lcd.lcdInfo.lcdW = 320;
+    lcd.lcdInfo.clearColor = BLACK;
+    lcd.lcdMode.dmaMode = 1;
+    lcd.lcdMode.spiMode = 1;
     return drv_LcdInit();
 }
 
