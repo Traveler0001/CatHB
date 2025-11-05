@@ -29,7 +29,7 @@ HAL_StatusTypeDef app_Init(void)
     lcd.lcdInfo.lcdH = 240;
     lcd.lcdInfo.lcdW = 320;
     lcd.lcdInfo.clearColor = BLACK;
-    lcd.lcdMode.dmaMode = 1;
+    lcd.lcdMode.dmaMode = 0;
     lcd.lcdMode.spiMode = 1;
     return drv_LcdInit();
 }

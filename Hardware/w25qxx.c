@@ -6,6 +6,8 @@
 // #include "lvgl.h"
 #include "ff.h"
 
+#if 0
+
 uint16_t BSP_W25QXX_TYPE = W25Q128; // 默认是W25Q128
 #define DUMMY_BYTE 0xFF
 #define fspi hspi3
@@ -858,3 +860,5 @@ void fatfs_test(void)
 //     W25Qx_Disable();                                //取消片选               
 //     HAL_Delay(3);                                //等待TRES1
 // } 
+
+#endif // 0

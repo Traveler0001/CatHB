@@ -42,8 +42,8 @@ add_subdirectory(cmake/stm32cubemx)
 file(GLOB_RECURSE USER_SOURCES
     ./Hardware/*.c
     ./Hardware/Hardware_list.h
-    ./LVGl/*.c
-    ./LVGl/lvgl.h
+    # ./LVGl/*.c
+    # ./LVGl/lvgl.h
 )
 
 # 将源文件添加到项目
@@ -54,6 +54,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
+    ./Hardware
+    # ./LVGL
 )
 
 # Add sources to executable
@@ -69,7 +71,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # ./Hardware/Drivers/drv_lcd.h
     # ./Hardware/Hardware_list.h
     ./Hardware
-    ./LVGL
+    # ./LVGL
 )
 
 # Add project symbols (macros)
@@ -83,6 +85,7 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
-
     # Add user defined libraries
+    # ./Hardware
+    # ./LVGL
 )
