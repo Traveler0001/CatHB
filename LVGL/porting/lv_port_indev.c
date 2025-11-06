@@ -4,13 +4,17 @@
  */
 
 /*Copy this file as "lv_port_indev.c" and set this value to "1" to enable content*/
+#include "main.h"
+#include "stm32f4xx_hal_gpio.h"
+#include <stdint.h>
 #if 1
 
 /*********************
  *      INCLUDES
  *********************/
 #include "lv_port_indev.h"
-// #include "tim.h"
+#include "tim.h"
+#include "gpio.h"
 
 /*********************
  *      DEFINES
@@ -383,12 +387,46 @@ static void encoder_init(void)
 /*Will be called by the library to read the encoder*/
 static void encoder_read(lv_indev_t *indev_drv, lv_indev_data_t *data)
 {
-    // uint8_t Direction = __HAL_TIM_IS_TIM_COUNTING_DOWN(&htim4); // 获取方向
-    // int16_t EncoderValue = (int16_t)__HAL_TIM_GET_COUNTER(&htim4); // 获取计数值
-    // __HAL_TIM_SET_COUNTER(&htim4, 0); // 清零计数器
+    static uint8_t buttoncnt = 0;
+    static uint8_t Direction = 0;
+    static int16_t EncoderValue = 0;
+    EncoderValue = (int16_t)__HAL_TIM_GET_COUNTER(&htim4); // 获取计数值
+    
+    if (EncoderValue >= 4 || EncoderValue <= ((int16_t)0xFFFF - 4))
+    {
+        Direction = __HAL_TIM_IS_TIM_COUNTING_DOWN(&htim4); // 获取方向
+        if (Direction == 0)
+            data->enc_diff = 1; // 顺时针
+        else
+            data->enc_diff = -1; // 逆时针
+        __HAL_TIM_SET_COUNTER(&htim4, 0); // 清零计数器
+        EncoderValue = 0;
+    }
 
-    data->enc_diff = encoder_diff;
-    data->state    = encoder_state;
+    if (HAL_GPIO_ReadPin(EC11_E_GPIO_Port, EC11_E_Pin) == GPIO_PIN_RESET)
+    {
+        buttoncnt++;
+        if (buttoncnt >= 4)
+        {
+            if (HAL_GPIO_ReadPin(EC11_E_GPIO_Port, EC11_E_Pin) == GPIO_PIN_SET)
+            {
+                encoder_state = LV_INDEV_STATE_PRESSED;
+                buttoncnt = 0;
+            }
+            else {
+                encoder_state = LV_INDEV_STATE_RELEASED;
+                buttoncnt = 4;
+            }
+        }
+    }
+    else
+    {
+        buttoncnt = 0;
+        encoder_state = LV_INDEV_STATE_RELEASED;
+    }
+
+    // data->enc_diff = encoder_diff;
+    // data->state    = encoder_state;
 }
 
 /*Call this function in an interrupt to process encoder events (turn, press)*/

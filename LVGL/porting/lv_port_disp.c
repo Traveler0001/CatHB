@@ -12,6 +12,8 @@
 #include "lv_port_disp.h"
 #include <stdbool.h>
 
+#include "../../Hardware/Middlewares/mid_lcd.h"
+
 /*********************
  *      DEFINES
  *********************/
@@ -34,7 +36,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void disp_init(void);
+// static void disp_init(void);
 
 static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map);
 
@@ -97,10 +99,10 @@ void lv_port_disp_init(void)
  **********************/
 
 /*Initialize your display and the required peripherals.*/
-static void disp_init(void)
-{
-    /*You code here*/
-}
+// static void disp_init(void)
+// {
+//     /*You code here*/
+// }
 
 volatile bool disp_flush_enabled = true;
 
@@ -118,13 +120,9 @@ void disp_disable_update(void)
     disp_flush_enabled = false;
 }
 
-#include "spi.h"
-#include "tftinit.h"
-#include "tftlcd.h"
-
 // CubeMX生成的SPI DMA句柄（在main.c或spi.c中定义）
-extern SPI_HandleTypeDef hspi1;
-extern DMA_HandleTypeDef hdma_spi1_tx;  // SPI发送DMA句柄
+// extern SPI_HandleTypeDef hspi1;
+// extern DMA_HandleTypeDef hdma_spi1_tx;  // SPI发送DMA句柄
 // extern DMA_HandleTypeDef hdma_spi1_rx;  // SPI接收DMA句柄
 
 /*Flush the content of the internal buffer the specific area on the display.
@@ -164,8 +162,8 @@ static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, uint8_t 
         //     }
             
         // }
-        // LCD_Fill_LVGL(area, px_map);
-        LCD_Fill(0, 0, 0, 0, 0xFFFF);
+        mid_LcdFillLVGL(area, px_map);
+        // LCD_Fill(0, 0, 0, 0, 0xFFFF);
         // LCD_Fill_LVGL(area, px_map);
     }
 

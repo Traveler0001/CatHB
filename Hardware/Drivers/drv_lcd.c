@@ -1,10 +1,12 @@
-#include "drv_lcd.h"
+#if 1
+
+// #include "drv_lcd.h"
 #include "st7789.h"
-#include "gpio.h"
+// #include "gpio.h"
 #include "spi.h"
+#include "hardware_list.h"
 // #include "stm32f4xx_hal_def.h"
 
-#if 1
 
 LCD_Handle lcd;
 

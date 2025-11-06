@@ -1,7 +1,6 @@
 #ifndef __DRV_LCD_H
 #define __DRV_LCD_H
 
-
 #include "main.h"
 #include <stdint.h>
 

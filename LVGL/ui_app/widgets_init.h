@@ -24,7 +24,11 @@ void digital_clock_count(int * hour, int * minute, int * seconds, char * meridie
 #endif
 
 
-void screen_digital_clock_1_timer(lv_timer_t *timer);
+void start_digital_clock_1_timer(lv_timer_t *timer);extern lv_obj_t * Hot_Board_temp_set;
+void lv_Hot_Board_temp_set_increment_event_cb(lv_event_t * event);
+void lv_Hot_Board_temp_set_decrement_event_cb(lv_event_t * event);
+
+void Hot_Board_digital_clock_1_timer(lv_timer_t *timer);
 
 
 #ifdef __cplusplus

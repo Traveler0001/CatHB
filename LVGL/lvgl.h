@@ -128,7 +128,7 @@ extern "C" {
 #include "ui_app/events_init.h"
 #include "ui_app/gui_guider.h"
 #include "ui_app/widgets_init.h"
-// #include "guider_customer_fonts.h"
+// #include "ui_app/guider_customer_fonts/guider_customer_fonts.h"
 
 #if LV_USE_PRIVATE_API
 #include "src/lvgl_private.h"

@@ -42,8 +42,10 @@ add_subdirectory(cmake/stm32cubemx)
 file(GLOB_RECURSE USER_SOURCES
     ./Hardware/*.c
     ./Hardware/Hardware_list.h
-    # ./LVGl/*.c
-    # ./LVGl/lvgl.h
+    ./LVGl/*.c
+    ./LVGl/lvgl.h
+    ./LVGl/lv_conf.h
+    # ./LVGL/ui_app/gui_guider.h
 )
 
 # 将源文件添加到项目
@@ -54,7 +56,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
-    ./Hardware
+    # ./Hardware
     # ./LVGL
 )
 
@@ -71,12 +73,14 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # ./Hardware/Drivers/drv_lcd.h
     # ./Hardware/Hardware_list.h
     ./Hardware
-    # ./LVGL
+    ./LVGL
+    # ./LVGL/ui_app
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+    LV_COLOR_16_SWAP
 )
 
 # Remove wrong libob.a library dependency when using cpp files

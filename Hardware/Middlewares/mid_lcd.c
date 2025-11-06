@@ -1,11 +1,15 @@
+#if 1
+
+// #include "Drivers/drv_lcd.h"
 #include "string.h"
 #include "math.h"
 #include "stdlib.h"
-#include "mid_lcd.h"
+// #include "mid_lcd.h"
+
+
+
 #include "hardware_list.h"
-
-#if 1
-
+#include <stdint.h>
 /**
 * @brief 
 * 
@@ -24,29 +28,26 @@
 // ******************************************************************************/
 
 
-#if LVGL
-void LCD_DrawPoint_LVGL(const lv_area_t *area, uint8_t *px_map)
+#if LCDLVGL
+void mid_LcdDrawPointLVGL(const lv_area_t *area, uint8_t *px_map)
 {
-    drv_LcdAddressSet(area->x1, area->y1, area->x2, area->y2);
+    drv_LcdAddressSet((uint16_t *)area->x1, (uint16_t *)area->y1, (uint16_t *)area->x2, (uint16_t *)area->y2);
     drv_LcdWRData8(*px_map);
 }
-void LCD_Fill_LVGL(const lv_area_t *area, uint8_t *px_map)
+
+void mid_LcdFillLVGL(const lv_area_t * area, uint8_t * px_map)
 {
     // CubeMX生成的SPI DMA句柄（在main.c或spi.c中定义）
-    extern SPI_HandleTypeDef hspi1;
-    extern DMA_HandleTypeDef hdma_spi1_tx; // SPI发送DMA句柄
+    // extern SPI_HandleTypeDef hspi1;
+    // extern DMA_HandleTypeDef hdma_spi1_tx; // SPI发送DMA句柄
                                            // extern DMA_HandleTypeDef hdma_spi1_rx;  // SPI接收DMA句柄
-
     uint16_t xsta = area->x1, xend = area->x2, ysta = area->y1, yend = area->y2;
     uint32_t windowarea = (xend - xsta + 1) * (yend - ysta + 1); // 窗口面积
-    LCD_Address_Set(xsta, ysta, xend, yend);
+    drv_LcdAddressSet(&xsta, &ysta, &xend, &yend);
 
     uint16_t buff_size = 0xFFFF;
     // uint32_t remaining = strlen(px_map); // 总字节数
     uint32_t remaining = windowarea*2; // 总字节数
-
-    LCD_DC_Set(); // 写数据
-    LCD_CS_Clr(); // 片选
 
     while (remaining > 0) {
         // 计算本次填充的字节数
@@ -54,15 +55,15 @@ void LCD_Fill_LVGL(const lv_area_t *area, uint8_t *px_map)
             uint16_t fill_size = remaining > buff_size ? buff_size : remaining;
 
             // 发送数据
-            HAL_SPI_Transmit_DMA(&hspi1, px_map, fill_size);
-            while (HAL_DMA_GetState(&hdma_spi1_tx) != HAL_DMA_STATE_READY) 
-                ;
             
+            // HAL_SPI_Transmit_DMA(&hspi1, px_map, fill_size);
+            // while (HAL_DMA_GetState(&hdma_spi1_tx) != HAL_DMA_STATE_READY) 
+                // ;
+            drv_LcdWRDatas(px_map, fill_size);
             // HAL_SPI_Transmit(&hspi1, px_map, fill_size, HAL_MAX_DELAY);
             remaining -= fill_size;
         // }
     }
-    LCD_CS_Set(); // 片选
 }
 #else
 #if BASECOMPONENTS
@@ -769,8 +770,9 @@ void LCD_ShowPicture(unsigned int x, unsigned int y, unsigned int length, unsign
 }
 #endif // EXTENDEDCOMPONENTS
 
-#endif // LVGL
+#endif // LCDLVGL
 
+#if LCDTEST
 HAL_StatusTypeDef mid_LcdTest(void)
 {
     uint16_t x0     = (rand() % 320);
@@ -793,5 +795,6 @@ HAL_StatusTypeDef mid_LcdTest(void)
     // printf( "drawing rectangle at %d %d %d %d in color %04X\n", x0, y0, x1, y1, color);
     return mid_LcdFill(&x0, &y0, &x1, &y1, &color);
 }
+#endif //  LCDTEST
 
 #endif

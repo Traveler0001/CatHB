@@ -2,7 +2,7 @@
 #include "w25qxx.h"
 #include "gpio.h"
 #include <stdio.h>
-#include "tftlcd.h"
+
 // #include "lvgl.h"
 #include "ff.h"
 

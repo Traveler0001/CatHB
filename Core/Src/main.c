@@ -30,11 +30,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdint.h>
-
+// #include <stdint.h>
+#include "lvgl.h"
 #include "hardware_list.h"
-// #include "lvgl.h"
-// #include ""
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+lv_ui guider_ui;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -120,25 +118,35 @@ int main(void)
   /**** 启动PWM输出 ****/
   // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);        // 启动 TIM3 通道1 的 PWM
   // __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0); // 设置通道1的Pulse为300
-  /****  ****/
-  app_Init();
-  app_LcdClear();
+  /**** lcd init ****/
+  app_LcdInit();
+  /**** start encoder ****/
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+  // app_LcdClear();
+  /**** lvgl init ****/
+  lv_init();
+  lv_port_disp_init();
+  lv_port_indev_init();
+  setup_ui(&guider_ui);
+  events_init(&guider_ui);
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  // osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
-  // MX_FREERTOS_Init();
+  osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
 
   /* Start scheduler */
-  // osKernelStart();
+  osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    app_LcdTest();
-    HAL_Delay(500);
+    // app_LcdTest();
+    // HAL_Delay(500);
+    // lv_timer_handler();
+    HAL_Delay(5);
     // static uint8_t toggle = 0;
     // HAL_GPIO_TogglePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin);
     // HAL_Delay(500);

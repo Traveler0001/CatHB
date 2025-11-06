@@ -2,18 +2,18 @@
 #define __MID_LCD_H
 
 #include "main.h"
-// #include "stm32f4xx_hal_def.h"
 
-#define LVGL 0
+#define LCDLVGL 1
+#define LCDTEST 0
 
-#if LVGL
+#if LCDLVGL
 #include "lvgl.h"
 #else
 #define BASECOMPONENTS 1
 #define EXTENDEDCOMPONENTS 0
-#endif
+#endif // LCDLVGL
 
-// // ������ɫ
+// 
 #define WHITE 0xFFFF
 #define BLACK 0x0000
 #define BLUE 0x001F
@@ -41,10 +41,9 @@
 
 /******* UI *******/
 
-#if LVGL
-void LCD_DrawPoint(uint16_t x, uint16_t y, uint16_t color);                                 // ��ָ��λ�û�һ����
-void LCD_Fill_LVGL(const lv_area_t * area, uint8_t * px_map);                                 // LVGL专用填充函数
-void LCD_DrawPoint_LVGL(const lv_area_t * area, uint8_t * px_map);
+#if LCDLVGL
+void mid_LcdDrawPointLVGL(const lv_area_t *area, uint8_t *px_map);
+void mid_LcdFillLVGL(const lv_area_t * area, uint8_t * px_map);
 #else
 #if BASECOMPONENTS
 HAL_StatusTypeDef mid_LcdDrawPoint(uint16_t x, uint16_t y, uint16_t color);                                 
@@ -74,7 +73,7 @@ void LCD_ShowPicture(unsigned int x, unsigned int y, unsigned int length, unsign
 
 #endif // EXTENDEDCOMPONENTS
 
-#endif // LVGL
+#endif // LCDLVGL
 
 HAL_StatusTypeDef mid_LcdTest(void);
 
