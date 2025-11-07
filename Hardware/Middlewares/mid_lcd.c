@@ -4,6 +4,7 @@
 #include "string.h"
 #include "math.h"
 #include "stdlib.h"
+#include "spi.h"
 // #include "mid_lcd.h"
 
 
@@ -55,11 +56,14 @@ void mid_LcdFillLVGL(const lv_area_t * area, uint8_t * px_map)
             uint16_t fill_size = remaining > buff_size ? buff_size : remaining;
 
             // 发送数据
+            HAL_GPIO_WritePin(TFT_DC_GPIO_Port, TFT_DC_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_RESET);
+
+            HAL_SPI_Transmit_DMA(&hspi1, px_map, fill_size);
+            while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY) ;
             
-            // HAL_SPI_Transmit_DMA(&hspi1, px_map, fill_size);
-            // while (HAL_DMA_GetState(&hdma_spi1_tx) != HAL_DMA_STATE_READY) 
-                // ;
-            drv_LcdWRDatas(px_map, fill_size);
+            HAL_GPIO_WritePin(TFT_CS_GPIO_Port, TFT_CS_Pin, GPIO_PIN_SET);
+            // drv_LcdWRDatas(px_map, fill_size);
             // HAL_SPI_Transmit(&hspi1, px_map, fill_size, HAL_MAX_DELAY);
             remaining -= fill_size;
         // }

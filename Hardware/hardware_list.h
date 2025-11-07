@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #define HLW8032 0
-#define MAX31865 0
+#define MAX31865 1
 #define W25QXX 0
 
 #define LCD 1
@@ -17,7 +17,9 @@ extern "C" {
 #endif
 
 #if MAX31865
-#include "max31865.h"
+#include "./Drivers/drv_max31865.h"
+#include "./Middlewares/mid_max31865.h"
+#include "./Application/app_max31865.h"
 #endif
 
 #if W25QXX

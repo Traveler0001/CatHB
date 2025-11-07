@@ -14,8 +14,6 @@
 #include "widgets_init.h"
 #include "custom.h"
 
-
-
 int Hot_Board_digital_clock_1_min_value = 0;
 int Hot_Board_digital_clock_1_hour_value = 0;
 int Hot_Board_digital_clock_1_sec_value = 0;
@@ -212,31 +210,110 @@ void setup_scr_Hot_Board(lv_ui *ui)
     lv_obj_set_style_pad_left(ui->Hot_Board_label_setv_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->Hot_Board_label_setv_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
-    //Write codes Hot_Board_label_temp
-    ui->Hot_Board_label_temp = lv_label_create(ui->Hot_Board);
-    lv_obj_set_pos(ui->Hot_Board_label_temp, 49, 84);
-    lv_obj_set_size(ui->Hot_Board_label_temp, 220, 60);
-    lv_obj_remove_flag(ui->Hot_Board_label_temp, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_remove_flag(ui->Hot_Board_label_temp, LV_OBJ_FLAG_CLICK_FOCUSABLE);
-    lv_obj_remove_flag(ui->Hot_Board_label_temp, LV_OBJ_FLAG_CHECKABLE);
-    lv_label_set_text(ui->Hot_Board_label_temp, "-000.0");
-    lv_label_set_long_mode(ui->Hot_Board_label_temp, LV_LABEL_LONG_WRAP);
+   
+    //Write codes Hot_Board_label_decimal
+    ui->Hot_Board_label_decimal = lv_label_create(ui->Hot_Board);
+    lv_obj_set_pos(ui->Hot_Board_label_decimal, 219, 85);
+    lv_obj_set_size(ui->Hot_Board_label_decimal, 40, 60);
+    lv_obj_remove_flag(ui->Hot_Board_label_decimal, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_decimal, LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_decimal, LV_OBJ_FLAG_CHECKABLE);
+    lv_label_set_text(ui->Hot_Board_label_decimal, "0");
+    lv_label_set_long_mode(ui->Hot_Board_label_decimal, LV_LABEL_LONG_WRAP);
 
-    //Write style for Hot_Board_label_temp, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->Hot_Board_label_temp, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->Hot_Board_label_temp, &lv_font_montserratMedium_60, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui->Hot_Board_label_temp, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui->Hot_Board_label_temp, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->Hot_Board_label_temp, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui->Hot_Board_label_temp, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    //Write style for Hot_Board_label_decimal, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->Hot_Board_label_decimal, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->Hot_Board_label_decimal, &lv_font_montserratMedium_60, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->Hot_Board_label_decimal, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->Hot_Board_label_decimal, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->Hot_Board_label_decimal, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes Hot_Board_label_point
+    ui->Hot_Board_label_point = lv_label_create(ui->Hot_Board);
+    lv_obj_set_pos(ui->Hot_Board_label_point, 206, 85);
+    lv_obj_set_size(ui->Hot_Board_label_point, 14, 60);
+    lv_obj_remove_flag(ui->Hot_Board_label_point, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_point, LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_point, LV_OBJ_FLAG_CHECKABLE);
+    lv_label_set_text(ui->Hot_Board_label_point, ".");
+    lv_label_set_long_mode(ui->Hot_Board_label_point, LV_LABEL_LONG_WRAP);
+
+    //Write style for Hot_Board_label_point, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->Hot_Board_label_point, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->Hot_Board_label_point, &lv_font_montserratMedium_60, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->Hot_Board_label_point, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->Hot_Board_label_point, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->Hot_Board_label_point, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes Hot_Board_label_Integer
+    ui->Hot_Board_label_Integer = lv_label_create(ui->Hot_Board);
+    lv_obj_set_pos(ui->Hot_Board_label_Integer, 86, 84);
+    lv_obj_set_size(ui->Hot_Board_label_Integer, 122, 60);
+    lv_obj_remove_flag(ui->Hot_Board_label_Integer, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_Integer, LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_Integer, LV_OBJ_FLAG_CHECKABLE);
+    lv_label_set_text(ui->Hot_Board_label_Integer, "000");
+    lv_label_set_long_mode(ui->Hot_Board_label_Integer, LV_LABEL_LONG_WRAP);
+
+    //Write style for Hot_Board_label_Integer, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->Hot_Board_label_Integer, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->Hot_Board_label_Integer, &lv_font_montserratMedium_60, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->Hot_Board_label_Integer, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->Hot_Board_label_Integer, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->Hot_Board_label_Integer, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->Hot_Board_label_Integer, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes Hot_Board_label_symbol
+    ui->Hot_Board_label_symbol = lv_label_create(ui->Hot_Board);
+    lv_obj_set_pos(ui->Hot_Board_label_symbol, 62, 84);
+    lv_obj_set_size(ui->Hot_Board_label_symbol, 25, 60);
+    lv_obj_remove_flag(ui->Hot_Board_label_symbol, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_symbol, LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_symbol, LV_OBJ_FLAG_CHECKABLE);
+    lv_label_set_text(ui->Hot_Board_label_symbol, "-");
+    lv_label_set_long_mode(ui->Hot_Board_label_symbol, LV_LABEL_LONG_WRAP);
+
+    //Write style for Hot_Board_label_symbol, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->Hot_Board_label_symbol, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->Hot_Board_label_symbol, &lv_font_montserratMedium_60, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->Hot_Board_label_symbol, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->Hot_Board_label_symbol, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->Hot_Board_label_symbol, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes Hot_Board_led_fan
     ui->Hot_Board_led_fan = lv_led_create(ui->Hot_Board);

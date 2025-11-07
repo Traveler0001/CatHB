@@ -15,6 +15,21 @@
 #include "freemaster_client.h"
 #endif
 
+#include "main.h"
+
+static void start_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOADED:
+    {
+        uiIndex = UISTART;
+        break;
+    }
+    default:
+        break;
+    }
+}
 
 static void start_btn_HB_event_handler (lv_event_t *e)
 {
@@ -32,7 +47,40 @@ static void start_btn_HB_event_handler (lv_event_t *e)
 
 void events_init_start (lv_ui *ui)
 {
+    lv_obj_add_event_cb(ui->start, start_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->start_btn_HB, start_btn_HB_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void Hot_Board_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOADED:
+    {
+        uiIndex = UIHOTBOARD;
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+        uiIndex = UINONE;
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void Hot_Board_spinbox_1_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_KEY:
+    {
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 static void Hot_Board_btn_ext_event_handler (lv_event_t *e)
@@ -41,7 +89,7 @@ static void Hot_Board_btn_ext_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_CLICKED:
     {
-        ui_load_scr_animation(&guider_ui, &guider_ui.start, guider_ui.start_del, &guider_ui.Hot_Board_del, setup_scr_start, LV_SCR_LOAD_ANIM_NONE, 0, 0, true, true);
+        ui_load_scr_animation(&guider_ui, &guider_ui.start, guider_ui.start_del, &guider_ui.Hot_Board_del, setup_scr_start, LV_SCR_LOAD_ANIM_NONE, 0, 100, true, true);
         break;
     }
     default:
@@ -51,6 +99,8 @@ static void Hot_Board_btn_ext_event_handler (lv_event_t *e)
 
 void events_init_Hot_Board (lv_ui *ui)
 {
+    lv_obj_add_event_cb(ui->Hot_Board, Hot_Board_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->Hot_Board_spinbox_1, Hot_Board_spinbox_1_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->Hot_Board_btn_ext, Hot_Board_btn_ext_event_handler, LV_EVENT_ALL, ui);
 }
 

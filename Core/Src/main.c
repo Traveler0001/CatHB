@@ -39,7 +39,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+UIINDEX uiIndex = UISTART;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -122,6 +122,9 @@ int main(void)
   // __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0); // 设置通道1的Pulse为300
   /**** lcd init ****/
   app_LcdInit();
+  MAX31865_MODE_24W;
+  app_MAX31865Init();
+  uiIndex = UINONE;
   /**** start encoder ****/
   HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   // app_LcdClear();

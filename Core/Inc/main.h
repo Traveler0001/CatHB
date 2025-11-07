@@ -36,7 +36,14 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef enum
+{
+  UINONE,
+  UISTART,
+  UIHOTBOARD
+}UIINDEX;
 
+extern UIINDEX uiIndex;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
