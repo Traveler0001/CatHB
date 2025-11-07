@@ -8,8 +8,8 @@
 */
 
 #include "lvgl.h"
-// #include "gui_guider.h"
-// #include "widgets_init.h"
+#include "gui_guider.h"
+#include "widgets_init.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -106,31 +106,31 @@ void start_digital_clock_1_timer(lv_timer_t *timer)
         lv_label_set_text_fmt(guider_ui.start_digital_clock_1, "%d:%02d:%02d", start_digital_clock_1_hour_value, start_digital_clock_1_min_value, start_digital_clock_1_sec_value);
     }
 }
-// void lv_Hot_Board_temp_set_increment_event_cb(lv_event_t * event)
-// {
-//     lv_event_code_t code = lv_event_get_code(event);
-//     if(code == LV_EVENT_SHORT_CLICKED || code == LV_EVENT_LONG_PRESSED_REPEAT) {
-//         lv_spinbox_increment(guider_ui.Hot_Board_temp_set);
-//     }
-// // }
-// void lv_Hot_Board_temp_set_decrement_event_cb(lv_event_t * event)
-// {
-//     lv_event_code_t code = lv_event_get_code(event);
-//     if(code == LV_EVENT_SHORT_CLICKED || code == LV_EVENT_LONG_PRESSED_REPEAT) {
-//         lv_spinbox_decrement(guider_ui.Hot_Board_temp_set);
-//     }
-// }
+void lv_Hot_Board_spinbox_1_increment_event_cb(lv_event_t * event)
+{
+    lv_event_code_t code = lv_event_get_code(event);
+    if(code == LV_EVENT_SHORT_CLICKED || code == LV_EVENT_LONG_PRESSED_REPEAT) {
+        lv_spinbox_increment(guider_ui.Hot_Board_spinbox_1);
+    }
+}
+void lv_Hot_Board_spinbox_1_decrement_event_cb(lv_event_t * event)
+{
+    lv_event_code_t code = lv_event_get_code(event);
+    if(code == LV_EVENT_SHORT_CLICKED || code == LV_EVENT_LONG_PRESSED_REPEAT) {
+        lv_spinbox_decrement(guider_ui.Hot_Board_spinbox_1);
+    }
+}
 
-// extern int Hot_Board_digital_clock_1_hour_value;
-// extern int Hot_Board_digital_clock_1_min_value;
-// extern int Hot_Board_digital_clock_1_sec_value;
+extern int Hot_Board_digital_clock_1_hour_value;
+extern int Hot_Board_digital_clock_1_min_value;
+extern int Hot_Board_digital_clock_1_sec_value;
 
-// void Hot_Board_digital_clock_1_timer(lv_timer_t *timer)
-// {
-//     clock_count(&Hot_Board_digital_clock_1_hour_value, &Hot_Board_digital_clock_1_min_value, &Hot_Board_digital_clock_1_sec_value);
-//     if (lv_obj_is_valid(guider_ui.Hot_Board_digital_clock_1))
-//     {
-//         lv_label_set_text_fmt(guider_ui.Hot_Board_digital_clock_1, "%d:%02d:%02d", Hot_Board_digital_clock_1_hour_value, Hot_Board_digital_clock_1_min_value, Hot_Board_digital_clock_1_sec_value);
-//     }
-// }
+void Hot_Board_digital_clock_1_timer(lv_timer_t *timer)
+{
+    clock_count(&Hot_Board_digital_clock_1_hour_value, &Hot_Board_digital_clock_1_min_value, &Hot_Board_digital_clock_1_sec_value);
+    if (lv_obj_is_valid(guider_ui.Hot_Board_digital_clock_1))
+    {
+        lv_label_set_text_fmt(guider_ui.Hot_Board_digital_clock_1, "%d:%02d:%02d", Hot_Board_digital_clock_1_hour_value, Hot_Board_digital_clock_1_min_value, Hot_Board_digital_clock_1_sec_value);
+    }
+}
 

@@ -23,38 +23,38 @@ typedef struct
 	bool start_del;
 	lv_obj_t *start_btn_setting;
 	lv_obj_t *start_btn_setting_label;
-	lv_obj_t *start_btn_usb;
-	lv_obj_t *start_btn_usb_label;
-	lv_obj_t *start_btn_sd;
-	lv_obj_t *start_btn_sd_label;
-	lv_obj_t *start_btn_ACMeter;
-	lv_obj_t *start_btn_ACMeter_label;
+	lv_obj_t *start_btn_USB;
+	lv_obj_t *start_btn_USB_label;
+	lv_obj_t *start_btn_FH;
+	lv_obj_t *start_btn_FH_label;
+	lv_obj_t *start_btn_AM;
+	lv_obj_t *start_btn_AM_label;
 	lv_obj_t *start_btn_HB;
 	lv_obj_t *start_btn_HB_label;
-	lv_obj_t *start_label_sd;
-	lv_obj_t *start_lable_Flash;
+	lv_obj_t *start_label_eeprom;
+	lv_obj_t *start_label_flash;
 	lv_obj_t *start_digital_clock_1;
-	// lv_obj_t *Hot_Board;
-	// bool Hot_Board_del;
-	// lv_obj_t *Hot_Board_temp_set;
-	// lv_obj_t *Hot_Board_temp_set_btn_plus;
-	// lv_obj_t *Hot_Board_temp_set_btn_minus;
-	// lv_obj_t *Hot_Board_btn_enter;
-	// lv_obj_t *Hot_Board_btn_enter_label;
-	// lv_obj_t *Hot_Board_HB_temp;
-	// lv_obj_t *Hot_Board_HB_label_I;
-	// lv_obj_t *Hot_Board_BH_value_I;
-	// lv_obj_t *Hot_Board_HB_label_U;
-	// lv_obj_t *Hot_Board_HB_value_u;
-	// lv_obj_t *Hot_Board_HB_label_Fan;
-	// lv_obj_t *Hot_Board_HB_label_hoting;
-	// lv_obj_t *Hot_Board_led_traic;
-	// lv_obj_t *Hot_Board_led_run;
-	// lv_obj_t *Hot_Board_digital_clock_1;
-	// lv_obj_t *Hot_Board_btn_exitHB;
-	// lv_obj_t *Hot_Board_btn_exitHB_label;
-	// lv_obj_t *Hot_Board_sw_1;
-	lv_obj_t *g_kb_top_layer;
+	lv_obj_t *Hot_Board;
+	bool Hot_Board_del;
+	lv_obj_t *Hot_Board_btn_enter;
+	lv_obj_t *Hot_Board_btn_enter_label;
+	lv_obj_t *Hot_Board_spinbox_1;
+	lv_obj_t *Hot_Board_spinbox_1_btn_plus;
+	lv_obj_t *Hot_Board_spinbox_1_btn_minus;
+	lv_obj_t *Hot_Board_sw_start;
+	lv_obj_t *Hot_Board_label_C;
+	lv_obj_t *Hot_Board_label_setv_value;
+	lv_obj_t *Hot_Board_label_temp;
+	lv_obj_t *Hot_Board_led_fan;
+	lv_obj_t *Hot_Board_led_tr;
+	lv_obj_t *Hot_Board_led_sw;
+	lv_obj_t *Hot_Board_label_A;
+	lv_obj_t *Hot_Board_label_CR;
+	lv_obj_t *Hot_Board_label_V;
+	lv_obj_t *Hot_Board_label_VL;
+	lv_obj_t *Hot_Board_digital_clock_1;
+	lv_obj_t *Hot_Board_btn_ext;
+	lv_obj_t *Hot_Board_btn_ext_label;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -83,12 +83,11 @@ extern lv_ui guider_ui;
 
 
 void setup_scr_start(lv_ui *ui);
-// void setup_scr_Hot_Board(lv_ui *ui);
+void setup_scr_Hot_Board(lv_ui *ui);
 
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
 // LV_FONT_DECLARE(lv_font_montserratMedium_12)
-// LV_FONT_DECLARE(lv_font_montserratMedium_60)
-// LV_FONT_DECLARE(lv_font_SourceHanSerifSC_Regular_18)
+LV_FONT_DECLARE(lv_customer_font_montserratMedium_60)
 
 
 #ifdef __cplusplus

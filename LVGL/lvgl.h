@@ -125,9 +125,9 @@ extern "C" {
 #include "porting/lv_port_disp.h"
 #include "porting/lv_port_indev.h"
 
-#include "ui_app/events_init.h"
-#include "ui_app/gui_guider.h"
-#include "ui_app/widgets_init.h"
+// #include "ui_app/events_init.h"
+// #include "ui_app/gui_guider.h"
+// #include "ui_app/widgets_init.h"
 // #include "ui_app/guider_customer_fonts/guider_customer_fonts.h"
 
 #if LV_USE_PRIVATE_API

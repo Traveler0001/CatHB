@@ -45,7 +45,7 @@ file(GLOB_RECURSE USER_SOURCES
     ./LVGl/*.c
     ./LVGl/lvgl.h
     ./LVGl/lv_conf.h
-    # ./LVGL/ui_app/gui_guider.h
+    ./LVGL/ui_app/gui_guider.h
 )
 
 # 将源文件添加到项目
@@ -74,7 +74,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # ./Hardware/Hardware_list.h
     ./Hardware
     ./LVGL
-    # ./LVGL/ui_app
+    ./LVGL/ui_app
 )
 
 # Add project symbols (macros)

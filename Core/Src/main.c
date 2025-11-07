@@ -32,6 +32,8 @@
 /* USER CODE BEGIN Includes */
 // #include <stdint.h>
 #include "lvgl.h"
+#include "gui_guider.h"
+#include "events_init.h"
 #include "hardware_list.h"
 /* USER CODE END Includes */
 

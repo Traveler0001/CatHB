@@ -1,5 +1,5 @@
 /*
-* Copyright 2025 NXP
+* Copyright 2024 NXP
 * NXP Proprietary. This software is owned or controlled by NXP and may only be used strictly in
 * accordance with the applicable license terms. By expressly accepting such terms or by downloading, installing,
 * activating and/or otherwise using the software, you are agreeing that you have read, and that you agree to
@@ -8,20 +8,35 @@
 */
 
 
-#ifndef EVENTS_INIT_H_
-#define EVENTS_INIT_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
+/*********************
+ *      INCLUDES
+ *********************/
+#include <stdio.h>
+#include "lvgl.h"
+#include "custom.h"
 
-#include "gui_guider.h"
+/*********************
+ *      DEFINES
+ *********************/
 
-void events_init(lv_ui *ui);
+/**********************
+ *      TYPEDEFS
+ **********************/
 
-void events_init_start(lv_ui *ui);
-void events_init_Hot_Board(lv_ui *ui);
+/**********************
+ *  STATIC PROTOTYPES
+ **********************/
 
-#ifdef __cplusplus
+/**********************
+ *  STATIC VARIABLES
+ **********************/
+
+/**
+ * Create a demo application
+ */
+
+void custom_init(lv_ui *ui)
+{
+    /* Add your codes here */
 }
-#endif
-#endif /* EVENT_CB_H_ */
+

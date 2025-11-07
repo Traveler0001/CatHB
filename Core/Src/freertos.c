@@ -58,7 +58,7 @@ const osThreadAttr_t defaultTask_attributes = {
 osThreadId_t tasklvglHandle;
 const osThreadAttr_t tasklvgl_attributes = {
   .name = "tasklvgl",
-  .stack_size = 1024 * 4,
+  .stack_size = 4096 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for muteLVGL */
