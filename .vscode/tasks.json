@@ -5,7 +5,6 @@
         {
             "label": "Flash STM32 (CubeProgrammer)",
             "type": "shell",
-            // "command": "C:/Users/TravelCat_1/AppData/Local/stm32cube/bundles/programmer/2.20.0/bin/STM32_Programmer_CLI.exe",
             "command": "C:/Users/13468/AppData/Local/stm32cube/bundles/programmer/2.20.0/bin/STM32_Programmer_CLI.exe",
             "args": [
                 "-c",
@@ -25,6 +24,14 @@
                 "panel": "shared"
             },
             "problemMatcher": []
+        },
+        {
+            "type": "cmake",
+            "label": "CMake: 安装",
+            "command": "install",
+            "preset": "Debug",
+            "problemMatcher": [],
+            "detail": "CMake 模板 安装 任务"
         }
     ]
 }

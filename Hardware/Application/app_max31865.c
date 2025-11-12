@@ -39,8 +39,8 @@ MAX31685_STATUS app_MAX31865Read()
 
     hmax31865.max_status = mid_Max31865RDataProcess();
 
-    switch (hmax31865.max_status)
-    {
+    // switch (hmax31865.max_status)
+    // {
     // case MAX31865OK:
     //     snprintf((char *)max31865statusInfo, max31865statusInfoMax - 2, "DATA OK");
     //     break;
@@ -68,7 +68,7 @@ MAX31685_STATUS app_MAX31865Read()
     // case MAX31865VBIASOVERORUNDER:
     //     snprintf((char *)max31865statusInfo, max31865statusInfoMax - 2, "VBIAS OVER OR UNDER");
     //     break;
-    }
+    // }
 
 #if showOfUsart
     HAL_UART_Transmit(&huart1, statusInfoMax, sizeof(statusInfoMax), HAL_MAX_DELAY);

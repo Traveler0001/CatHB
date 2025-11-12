@@ -8,6 +8,7 @@ extern "C" {
 #define HLW8032 0
 #define MAX31865 1
 #define W25QXX 0
+#define TRAIC 1
 
 #define LCD 1
 #define ST7789 1
@@ -34,6 +35,10 @@ extern "C" {
 #include "./Middlewares/mid_lcd.h"
 #include "./Application/app_lcd.h"
 #endif
+
+#if TRAIC
+    #include "./Drivers/drv_traic.h"
+#endif // TRAIC
 
 #ifdef __cplusplus
 } /*extern "C"*/

@@ -93,7 +93,6 @@ void digital_clock_count(int * hour, int * minute, int * seconds, char * meridie
     }
 }
 
-
 extern int start_digital_clock_1_hour_value;
 extern int start_digital_clock_1_min_value;
 extern int start_digital_clock_1_sec_value;

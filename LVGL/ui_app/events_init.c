@@ -9,7 +9,9 @@
 
 #include "events_init.h"
 #include <stdio.h>
+#include "Application/app_max31865.h"
 #include "lvgl.h"
+#include "hardware_list.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -17,12 +19,29 @@
 
 #include "main.h"
 
+extern int start_digital_clock_1_hour_value;
+extern int start_digital_clock_1_min_value;
+extern int start_digital_clock_1_sec_value;
+
+extern int Hot_Board_digital_clock_1_hour_value;
+extern int Hot_Board_digital_clock_1_min_value;
+extern int Hot_Board_digital_clock_1_sec_value;
+
 static void start_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
     case LV_EVENT_SCREEN_LOADED:
     {
+        if (start_digital_clock_1_hour_value != Hot_Board_digital_clock_1_hour_value ||
+            start_digital_clock_1_min_value != Hot_Board_digital_clock_1_min_value ||
+            start_digital_clock_1_sec_value != Hot_Board_digital_clock_1_sec_value)
+        {
+            start_digital_clock_1_hour_value = Hot_Board_digital_clock_1_hour_value;
+            start_digital_clock_1_min_value = Hot_Board_digital_clock_1_min_value;
+            start_digital_clock_1_sec_value = Hot_Board_digital_clock_1_sec_value;
+        }
+
         uiIndex = UISTART;
         break;
     }
@@ -58,6 +77,15 @@ static void Hot_Board_event_handler (lv_event_t *e)
     case LV_EVENT_SCREEN_LOADED:
     {
         uiIndex = UIHOTBOARD;
+        if (Hot_Board_digital_clock_1_hour_value != start_digital_clock_1_hour_value ||
+            Hot_Board_digital_clock_1_min_value != start_digital_clock_1_min_value ||
+            Hot_Board_digital_clock_1_sec_value != start_digital_clock_1_sec_value)
+        {
+            Hot_Board_digital_clock_1_hour_value = start_digital_clock_1_hour_value;
+            Hot_Board_digital_clock_1_min_value = start_digital_clock_1_min_value;
+            Hot_Board_digital_clock_1_sec_value = start_digital_clock_1_sec_value;
+        }
+        app_MAX31865Init();
         break;
     }
     case LV_EVENT_SCREEN_UNLOAD_START:
@@ -89,7 +117,8 @@ static void Hot_Board_btn_ext_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_CLICKED:
     {
-        ui_load_scr_animation(&guider_ui, &guider_ui.start, guider_ui.start_del, &guider_ui.Hot_Board_del, setup_scr_start, LV_SCR_LOAD_ANIM_NONE, 0, 100, true, true);
+        uiIndex = UINONE;
+        ui_load_scr_animation(&guider_ui, &guider_ui.start, guider_ui.start_del, &guider_ui.Hot_Board_del, setup_scr_start, LV_SCR_LOAD_ANIM_NONE, 0, 400, true, true);
         break;
     }
     default:

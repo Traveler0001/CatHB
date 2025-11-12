@@ -56,7 +56,7 @@ void MX_GPIO_Init(void)
                           |MAX31865_CS_Pin|FAN_CTR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, PT100_MODE_Pin|TFT_BK_Pin|TFT_RES_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, PT100_MODE_Pin|TFT_RES_Pin|TFT_BK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED2_Pin|LED1_Pin, GPIO_PIN_RESET);
@@ -85,8 +85,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(PT100_MODE_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : TFT_BK_Pin TFT_RES_Pin */
-  GPIO_InitStruct.Pin = TFT_BK_Pin|TFT_RES_Pin;
+  /*Configure GPIO pins : TFT_RES_Pin TFT_BK_Pin */
+  GPIO_InitStruct.Pin = TFT_RES_Pin|TFT_BK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;

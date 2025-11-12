@@ -19,20 +19,23 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "task.h"
-#include "main.h"
 #include "cmsis_os.h"
+#include "main.h"
+#include "task.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "gui_guider.h"
 #include "hardware_list.h"
 #include "lvgl.h"
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "gui_guider.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +50,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+bool tempChangeFlag = 0;
 
 /* USER CODE END PM */
 
@@ -57,34 +61,37 @@
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+    .name = "defaultTask",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 /* Definitions for tasklvgl */
 osThreadId_t tasklvglHandle;
 const osThreadAttr_t tasklvgl_attributes = {
-  .name = "tasklvgl",
-  .stack_size = 3072 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "tasklvgl",
+    .stack_size = 3072 * 4,
+    .priority = (osPriority_t)osPriorityLow,
+};
+/* Definitions for tasktempread */
+osThreadId_t tasktempreadHandle;
+const osThreadAttr_t tasktempread_attributes = {
+    .name = "tasktempread",
+    .stack_size = 300 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 /* Definitions for tasktempctr */
 osThreadId_t tasktempctrHandle;
 const osThreadAttr_t tasktempctr_attributes = {
-  .name = "tasktempctr",
-  .stack_size = 300 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "tasktempctr",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 /* Definitions for muteLVGL */
 osMutexId_t muteLVGLHandle;
-const osMutexAttr_t muteLVGL_attributes = {
-  .name = "muteLVGL"
-};
+const osMutexAttr_t muteLVGL_attributes = {.name = "muteLVGL"};
 /* Definitions for mutexMAX31865 */
 osMutexId_t mutexMAX31865Handle;
-const osMutexAttr_t mutexMAX31865_attributes = {
-  .name = "mutexMAX31865"
-};
+const osMutexAttr_t mutexMAX31865_attributes = {.name = "mutexMAX31865"};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -93,6 +100,7 @@ const osMutexAttr_t mutexMAX31865_attributes = {
 
 void StartDefaultTask(void *argument);
 void taskLvgl(void *argument);
+void taskTempRead(void *argument);
 void taskTempCtr(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
@@ -123,10 +131,10 @@ void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName) {
 /* USER CODE END 4 */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
@@ -156,10 +164,15 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  defaultTaskHandle =
+      osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of tasklvgl */
   tasklvglHandle = osThreadNew(taskLvgl, NULL, &tasklvgl_attributes);
+
+  /* creation of tasktempread */
+  tasktempreadHandle =
+      osThreadNew(taskTempRead, NULL, &tasktempread_attributes);
 
   /* creation of tasktempctr */
   tasktempctrHandle = osThreadNew(taskTempCtr, NULL, &tasktempctr_attributes);
@@ -171,7 +184,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -181,14 +193,17 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
-{
+void StartDefaultTask(void *argument) {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
+  HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin,
+                    !HAL_GPIO_ReadPin(LED1_GPIO_Port, LED1_Pin));
   /* Infinite loop */
   for (;;) {
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    HAL_GPIO_TogglePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin);
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
@@ -201,8 +216,7 @@ void StartDefaultTask(void *argument)
  * @retval None
  */
 /* USER CODE END Header_taskLvgl */
-void taskLvgl(void *argument)
-{
+void taskLvgl(void *argument) {
   /* USER CODE BEGIN taskLvgl */
   /* Infinite loop */
   for (;;) {
@@ -217,16 +231,15 @@ void taskLvgl(void *argument)
   /* USER CODE END taskLvgl */
 }
 
-/* USER CODE BEGIN Header_taskTempCtr */
+/* USER CODE BEGIN Header_taskTempRead */
 /**
- * @brief Function implementing the tasktempctr thread.
+ * @brief Function implementing the tasktempread thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_taskTempCtr */
-void taskTempCtr(void *argument)
-{
-  /* USER CODE BEGIN taskTempCtr */
+/* USER CODE END Header_taskTempRead */
+void taskTempRead(void *argument) {
+  /* USER CODE BEGIN taskTempRead */
   static char intBuf[7]; // 整数位缓冲区（固定大小，全局复用）
   static char decBuf[4]; // 小数位缓冲区（固定大小，全局复用）
   /* Infinite loop */
@@ -234,6 +247,10 @@ void taskTempCtr(void *argument)
     if (uiIndex == UIHOTBOARD) {
       osDelay(3);
       app_MAX31865Read();
+
+      // // 统一获取互斥锁（提前获取，减少重复调用，降低锁竞争频率）
+      // while (osMutexAcquire(muteLVGLHandle, 50) != osOK)
+      //   ;
 
       // 统一获取互斥锁（提前获取，减少重复调用，降低锁竞争频率）
       while (osMutexAcquire(muteLVGLHandle, 50) != osOK)
@@ -245,7 +262,9 @@ void taskTempCtr(void *argument)
         // 可同时清空符号和小数位（避免状态切换时显示残留）
         lv_label_set_text(guider_ui.Hot_Board_label_symbol, " ");
         lv_label_set_text(guider_ui.Hot_Board_label_decimal, " ");
-      } else if (hmax31865.max_status == MAX31865OK) {
+      } 
+      else if (hmax31865.max_status == MAX31865OK) 
+      {
         // 状态正常：更新温度显示
         float temp = hmax31865.max_rtdData.temperature;
         char sign = (temp >= 0) ? ' ' : '-';
@@ -274,10 +293,13 @@ void taskTempCtr(void *argument)
         snprintf(decBuf, sizeof(decBuf), "%1d", decimal);
         const char *currentDec =
             lv_label_get_text(guider_ui.Hot_Board_label_decimal);
-        if (strcmp(currentDec, decBuf) != 0) {
+        if (strcmp(currentDec, decBuf) != 0) 
+        {
           lv_label_set_text(guider_ui.Hot_Board_label_decimal, decBuf);
         }
-      } else {
+      }
+      else 
+      {
         // 其他错误状态：显示".--"
         lv_label_set_text(guider_ui.Hot_Board_label_Integer, ".--");
         // 清空符号和小数位，避免残留
@@ -290,6 +312,36 @@ void taskTempCtr(void *argument)
     }
     osDelay(200);
   }
+  /* USER CODE END taskTempRead */
+}
+
+/* USER CODE BEGIN Header_taskTempCtr */
+/**
+ * @brief Function implementing the tasktempctr thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_taskTempCtr */
+void taskTempCtr(void *argument) {
+  /* USER CODE BEGIN taskTempCtr */
+
+  /* Infinite loop */
+  for (;;) {
+    // 0. 确认
+    // 1. 加锁读取全局状态（温度、使能等）
+    // 2. 加热使能状态下的控制逻辑
+    // 3. 计算加热阶段与调功参数
+    // 4. 更新调功周期（周期变化时重置计数器）
+    // 5. 累加周期计数器（100ms/次）
+    // 6. 判断当前加热阶段（启动阶段忽略防频繁启停）
+    // 7. 更新加热指示灯
+    // 8. 风扇控制逻辑
+    // 9. 风扇硬件控制与界面反馈
+    // break;
+    
+
+    osDelay(200);
+  }
   /* USER CODE END taskTempCtr */
 }
 
@@ -297,4 +349,3 @@ void taskTempCtr(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-

@@ -28,6 +28,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
+
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
 
@@ -47,6 +48,7 @@ file(GLOB_RECURSE USER_SOURCES
     ./LVGl/lv_conf.h
     ./LVGL/ui_app/gui_guider.h
 )
+
 
 # 将源文件添加到项目
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE

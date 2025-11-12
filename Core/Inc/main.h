@@ -72,10 +72,10 @@ void Error_Handler(void);
 #define PT100_MODE_GPIO_Port GPIOA
 #define HLW8032_PF_Pin GPIO_PIN_1
 #define HLW8032_PF_GPIO_Port GPIOA
-#define TFT_BK_Pin GPIO_PIN_3
-#define TFT_BK_GPIO_Port GPIOA
-#define TFT_RES_Pin GPIO_PIN_4
+#define TFT_RES_Pin GPIO_PIN_3
 #define TFT_RES_GPIO_Port GPIOA
+#define TFT_BK_Pin GPIO_PIN_4
+#define TFT_BK_GPIO_Port GPIOA
 #define TFT_DC_Pin GPIO_PIN_4
 #define TFT_DC_GPIO_Port GPIOC
 #define TFT_CS_Pin GPIO_PIN_5

@@ -3,7 +3,6 @@
 
 #include "main.h"
 #include "gpio.h"
-#include "stm32f4xx_hal_gpio.h"
 
 //*
 //* 寄存器地址    寄存器名称            读写属性    位编号      位名称 / 功能                   详细说明
