@@ -1,2 +1,3 @@
-// #include "hardware_list.h"
+#include "hardware_list.h"
 
+TRAIC_HandleTypeDef htraic;

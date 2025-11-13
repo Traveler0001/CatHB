@@ -19,10 +19,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
+#include "Drivers/drv_max31865.h"
+#include "Drivers/drv_traic.h"
 #include "cmsis_os.h"
+#include "cmsis_os2.h"
 #include "main.h"
+#include "stm32f4xx_hal_gpio.h"
 #include "task.h"
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -203,7 +206,7 @@ void StartDefaultTask(void *argument) {
   for (;;) {
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-    HAL_GPIO_TogglePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin);
+    // HAL_GPIO_TogglePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin);
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
@@ -256,15 +259,7 @@ void taskTempRead(void *argument) {
       while (osMutexAcquire(muteLVGLHandle, 50) != osOK)
         ;
 
-      if (hmax31865.max_status == MAX31865NOTRADY) {
-        // 状态未就绪：显示"---"
-        lv_label_set_text(guider_ui.Hot_Board_label_Integer, "---");
-        // 可同时清空符号和小数位（避免状态切换时显示残留）
-        lv_label_set_text(guider_ui.Hot_Board_label_symbol, " ");
-        lv_label_set_text(guider_ui.Hot_Board_label_decimal, " ");
-      } 
-      else if (hmax31865.max_status == MAX31865OK) 
-      {
+      if (hmax31865.max_status == MAX31865OK) {
         // 状态正常：更新温度显示
         float temp = hmax31865.max_rtdData.temperature;
         char sign = (temp >= 0) ? ' ' : '-';
@@ -293,13 +288,16 @@ void taskTempRead(void *argument) {
         snprintf(decBuf, sizeof(decBuf), "%1d", decimal);
         const char *currentDec =
             lv_label_get_text(guider_ui.Hot_Board_label_decimal);
-        if (strcmp(currentDec, decBuf) != 0) 
-        {
+        if (strcmp(currentDec, decBuf) != 0) {
           lv_label_set_text(guider_ui.Hot_Board_label_decimal, decBuf);
         }
-      }
-      else 
-      {
+      } else if (hmax31865.max_status == MAX31865NOTRADY) {
+        // 状态未就绪：显示"---"
+        lv_label_set_text(guider_ui.Hot_Board_label_Integer, "---");
+        // 可同时清空符号和小数位（避免状态切换时显示残留）
+        lv_label_set_text(guider_ui.Hot_Board_label_symbol, " ");
+        lv_label_set_text(guider_ui.Hot_Board_label_decimal, " ");
+      } else {
         // 其他错误状态：显示".--"
         lv_label_set_text(guider_ui.Hot_Board_label_Integer, ".--");
         // 清空符号和小数位，避免残留
@@ -324,11 +322,86 @@ void taskTempRead(void *argument) {
 /* USER CODE END Header_taskTempCtr */
 void taskTempCtr(void *argument) {
   /* USER CODE BEGIN taskTempCtr */
+  HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+  htraic.tempProfile = &temp_profile;
+  uint32_t last_tick = 0;
+  uint16_t cnt = 0;
 
   /* Infinite loop */
   for (;;) {
-    // 0. 确认
-    // 1. 加锁读取全局状态（温度、使能等）
+    // 0.读取使能状态
+    if (htraic.traicStatus.TRAICENSTATUS) {
+      // 读取设定温度
+      float *tempSet = &htraic.tempCtr.temp_set;
+      // 判断设定是否在有效范围
+      if (*tempSet > htraic.tempProfile->min_temp_limit && *tempSet < htraic.tempProfile->min_temp_limit)
+      {
+        // 如果设定温度有效，判断当前温度状态
+        // 如果设定温度大于当前温度，修改状态为LOWOFSET
+        if (*tempSet > hmax31865.max_rtdData.temperature) 
+        {
+          htraic.tempStatus = LOWOFSET;
+        }
+        else
+        {
+          // 否则设定为HIGHSET
+          htraic.tempStatus = HIGHSET;
+        }
+
+        // 如果当前温度低于设定温度，根据温差计算加热阶段
+        if (htraic.tempStatus == LOWOFSET) 
+        {
+          // 计算温度差
+          float tempDelta = fabsf(*tempSet - hmax31865.max_rtdData.temperature);
+          // 根据温差判断当前加热状态
+          if (tempDelta > htraic.tempProfile->fullSpeedThreshold) {
+            // 温差大于100℃
+            htraic.heatSpeed = FULLSPEED;
+          } else if (tempDelta > htraic.tempProfile->halfSpeedThreshold) {
+            // 温差20~100℃
+            htraic.heatSpeed = HALFSPEED;
+          } else if(tempDelta > htraic.tempProfile->lowSpeedThreshold){
+            // 温差小于20℃
+            htraic.heatSpeed = LOWSPEED;
+          }else if (tempDelta > htraic.tempProfile->keepSpeedThreshold) {
+            htraic.heatSpeed = KEEPSPEED;
+          }
+        }
+        else {
+          htraic.heatSpeed = ZEROSPEED;
+        }
+
+        if (htraic.heatSpeed == FULLSPEED) {
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
+          osDelay(htraic.tempProfile->fullSpeedThreshold);
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+        }else if (htraic.heatSpeed = HALFSPEED) {
+          float duty_half = htraic.tempProfile->duty_half / 100.0f * htraic.tempProfile->halfSpeedThreshold;
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
+          osDelay((uint32_t)duty_half);
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+          osDelay(htraic.tempProfile->halfSpeedThreshold - (uint32_t)duty_half);
+        }else if (htraic.heatSpeed = LOWSPEED) {
+          float duty_low = htraic.tempProfile->period_low / 100.0f * htraic.tempProfile->lowSpeedThreshold;
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
+          osDelay((uint32_t)duty_low);
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+          osDelay(htraic.tempProfile->lowSpeedThreshold - (uint32_t)duty_low);
+        }else if (htraic.heatSpeed = KEEPSPEED) {
+          float duty_keep = htraic.tempProfile->period_keep / 100.0f * htraic.tempProfile->keepSpeedThreshold;
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
+          osDelay((uint32_t)duty_keep);
+          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+          osDelay(htraic.tempProfile->keepSpeedThreshold - (uint32_t)duty_keep);
+        }
+      }
+      else {
+        htraic.tempStatus = TEMPSETERR;
+      }
+      
+
+    } else {
+    }
     // 2. 加热使能状态下的控制逻辑
     // 3. 计算加热阶段与调功参数
     // 4. 更新调功周期（周期变化时重置计数器）
@@ -338,7 +411,6 @@ void taskTempCtr(void *argument) {
     // 8. 风扇控制逻辑
     // 9. 风扇硬件控制与界面反馈
     // break;
-    
 
     osDelay(200);
   }

@@ -8,10 +8,14 @@
 */
 
 #include "events_init.h"
+#include <stdbool.h>
 #include <stdio.h>
-#include "Application/app_max31865.h"
+#include <stdlib.h>
+#include <sys/_intsup.h>
+#include "gui_guider.h"
 #include "lvgl.h"
 #include "hardware_list.h"
+#include "src/widgets/label/lv_label.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -98,12 +102,62 @@ static void Hot_Board_event_handler (lv_event_t *e)
     }
 }
 
+static void Hot_Board_btn_enter_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+    
+        float temp_set = lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1);
+        htraic.tempCtr.temp_set = temp_set;
+        char* buf[10];
+        snprintf(buf, sizeof(buf), "%3.1f", temp_set/100.0);
+        lv_label_set_text(guider_ui.Hot_Board_label_setv_value, buf);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static void Hot_Board_spinbox_1_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
     case LV_EVENT_KEY:
     {
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void Hot_Board_sw_start_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        lv_obj_t * status_obj = lv_event_get_target(e);
+        int status = lv_obj_has_state(status_obj, LV_STATE_CHECKED) ? true : false;
+        switch (status) {
+        case (true):
+        {
+            htraic.traicStatus.TRAICENSTATUS = true;
+            lv_obj_remove_flag(guider_ui.Hot_Board_led_sw, LV_OBJ_FLAG_HIDDEN);
+            break;
+        }
+        case (false):
+        {
+            htraic.traicStatus.TRAICENSTATUS = false;
+            lv_obj_add_flag(guider_ui.Hot_Board_led_sw, LV_OBJ_FLAG_HIDDEN);
+            break;
+        }
+        default:
+            break;
+        }
         break;
     }
     default:
@@ -129,7 +183,9 @@ static void Hot_Board_btn_ext_event_handler (lv_event_t *e)
 void events_init_Hot_Board (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->Hot_Board, Hot_Board_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->Hot_Board_btn_enter, Hot_Board_btn_enter_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->Hot_Board_spinbox_1, Hot_Board_spinbox_1_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->Hot_Board_sw_start, Hot_Board_sw_start_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->Hot_Board_btn_ext, Hot_Board_btn_ext_event_handler, LV_EVENT_ALL, ui);
 }
 
