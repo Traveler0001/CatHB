@@ -20,12 +20,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
 #include "Drivers/drv_max31865.h"
-#include "Drivers/drv_traic.h"
 #include "cmsis_os.h"
 #include "cmsis_os2.h"
 #include "main.h"
-#include "stm32f4xx_hal_gpio.h"
 #include "task.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -86,7 +85,7 @@ const osThreadAttr_t tasktempread_attributes = {
 osThreadId_t tasktempctrHandle;
 const osThreadAttr_t tasktempctr_attributes = {
     .name = "tasktempctr",
-    .stack_size = 256 * 4,
+    .stack_size = 350 * 4,
     .priority = (osPriority_t)osPriorityLow,
 };
 /* Definitions for muteLVGL */
@@ -308,7 +307,7 @@ void taskTempRead(void *argument) {
       // 统一释放互斥锁
       osMutexRelease(muteLVGLHandle);
     }
-    osDelay(200);
+    osDelay(150);
   }
   /* USER CODE END taskTempRead */
 }
@@ -319,100 +318,59 @@ void taskTempRead(void *argument) {
  * @param argument: Not used
  * @retval None
  */
+
 /* USER CODE END Header_taskTempCtr */
 void taskTempCtr(void *argument) {
   /* USER CODE BEGIN taskTempCtr */
   HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
-  htraic.tempProfile = &temp_profile;
-  uint32_t last_tick = 0;
-  uint16_t cnt = 0;
+  // 初始化
+  TRAIC_ParamInit();
+  static float last_temp_set = 0.0f; // 静态变量记录上一次设定值
+  // 假设温度传感器初始化（示例）
+  // HMAX31865_Init();
 
-  /* Infinite loop */
   for (;;) {
-    // 0.读取使能状态
-    if (htraic.traicStatus.TRAICENSTATUS) {
-      // 读取设定温度
-      float *tempSet = &htraic.tempCtr.temp_set;
-      // 判断设定是否在有效范围
-      if (*tempSet > htraic.tempProfile->min_temp_limit && *tempSet < htraic.tempProfile->min_temp_limit)
-      {
-        // 如果设定温度有效，判断当前温度状态
-        // 如果设定温度大于当前温度，修改状态为LOWOFSET
-        if (*tempSet > hmax31865.max_rtdData.temperature) 
-        {
-          htraic.tempStatus = LOWOFSET;
-        }
-        else
-        {
-          // 否则设定为HIGHSET
-          htraic.tempStatus = HIGHSET;
-        }
-
-        // 如果当前温度低于设定温度，根据温差计算加热阶段
-        if (htraic.tempStatus == LOWOFSET) 
-        {
-          // 计算温度差
-          float tempDelta = fabsf(*tempSet - hmax31865.max_rtdData.temperature);
-          // 根据温差判断当前加热状态
-          if (tempDelta > htraic.tempProfile->fullSpeedThreshold) {
-            // 温差大于100℃
-            htraic.heatSpeed = FULLSPEED;
-          } else if (tempDelta > htraic.tempProfile->halfSpeedThreshold) {
-            // 温差20~100℃
-            htraic.heatSpeed = HALFSPEED;
-          } else if(tempDelta > htraic.tempProfile->lowSpeedThreshold){
-            // 温差小于20℃
-            htraic.heatSpeed = LOWSPEED;
-          }else if (tempDelta > htraic.tempProfile->keepSpeedThreshold) {
-            htraic.heatSpeed = KEEPSPEED;
-          }
-        }
-        else {
-          htraic.heatSpeed = ZEROSPEED;
-        }
-
-        if (htraic.heatSpeed == FULLSPEED) {
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
-          osDelay(htraic.tempProfile->fullSpeedThreshold);
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
-        }else if (htraic.heatSpeed = HALFSPEED) {
-          float duty_half = htraic.tempProfile->duty_half / 100.0f * htraic.tempProfile->halfSpeedThreshold;
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
-          osDelay((uint32_t)duty_half);
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
-          osDelay(htraic.tempProfile->halfSpeedThreshold - (uint32_t)duty_half);
-        }else if (htraic.heatSpeed = LOWSPEED) {
-          float duty_low = htraic.tempProfile->period_low / 100.0f * htraic.tempProfile->lowSpeedThreshold;
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
-          osDelay((uint32_t)duty_low);
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
-          osDelay(htraic.tempProfile->lowSpeedThreshold - (uint32_t)duty_low);
-        }else if (htraic.heatSpeed = KEEPSPEED) {
-          float duty_keep = htraic.tempProfile->period_keep / 100.0f * htraic.tempProfile->keepSpeedThreshold;
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_SET);
-          osDelay((uint32_t)duty_keep);
-          HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
-          osDelay(htraic.tempProfile->keepSpeedThreshold - (uint32_t)duty_keep);
-        }
-      }
-      else {
-        htraic.tempStatus = TEMPSETERR;
-      }
-      
-
-    } else {
+    // 2. 读取当前温度
+    htraic.tempCtr.temp_current = hmax31865.max_rtdData.temperature;
+    
+    // 1. 加热使能检测
+    if (!htraic.traicStatus.TRAICENSTATUS) {
+        htraic.tempCtr.current_on_ms = 0;
+        htraic.tempCtr.record_cnt = 0;
+        osDelay(500);
+        continue;
     }
-    // 2. 加热使能状态下的控制逻辑
-    // 3. 计算加热阶段与调功参数
-    // 4. 更新调功周期（周期变化时重置计数器）
-    // 5. 累加周期计数器（100ms/次）
-    // 6. 判断当前加热阶段（启动阶段忽略防频繁启停）
-    // 7. 更新加热指示灯
-    // 8. 风扇控制逻辑
-    // 9. 风扇硬件控制与界面反馈
-    // break;
 
-    osDelay(200);
+    // 3. 计算占空比
+    TRAIC_CalcDynamicPower();
+    
+
+    //  // 在读取当前温度后添加：
+    // if (fabs(htraic.tempCtr.temp_set - last_temp_set) > 0.1f) {
+    //     htraic.temp_set_changed = true;
+    //     last_temp_set = htraic.tempCtr.temp_set;
+    // }
+
+    // （此处仅为框架，需根据实际传感器驱动实现）
+
+    // 2. 检查设定温度有效性
+    // if (htraic.tempCtr.temp_set < htraic.tempProfile.min_temp_limit ||
+    //     htraic.tempCtr.temp_set > htraic.tempProfile.max_temp_limit) {
+    //   htraic.tempCtr.current_on_ms = 0;
+    //   htraic.traicStatus.TRAICRUNSTATUS = false;
+    //   osDelay(htraic.tempProfile.control_period);
+    //   continue;
+    // }
+
+    // 3. 计算功率
+    // TRAIC_CalcDynamicPower();
+
+    // 4. 执行加热
+    TRAIC_ExecuteHeating();
+
+    // 5. 风扇控制（示例：温度＞100℃或加热时启动）
+    htraic.fanStatus.FANRUNSTATUS = (htraic.tempCtr.temp_current > 100.0f) ||
+                                    (htraic.traicStatus.TRAICRUNSTATUS);
   }
   /* USER CODE END taskTempCtr */
 }

@@ -4,8 +4,6 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
-        
         {
             "type": "stlinkgdbtarget",
             "request": "launch",
@@ -19,6 +17,34 @@
                     "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context1}"
                 }
             ]
+        },
+        {
+            "name": "CUBE1",
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${workspaceFolder}/build/Debug/CUBEIDE1.elf"
+                }
+            ],
+            "verbose": false
+        },
+        {
+            "name": "CUBE1",
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${workspaceFolder}/build/Debug/CUBEIDE1.elf"
+                }
+            ],
+            "verbose": false
         }
     ]
 }

@@ -319,31 +319,34 @@ void setup_scr_Hot_Board(lv_ui *ui)
     ui->Hot_Board_led_fan = lv_led_create(ui->Hot_Board);
     lv_obj_set_pos(ui->Hot_Board_led_fan, 24, 139);
     lv_obj_set_size(ui->Hot_Board_led_fan, 5, 5);
+    lv_obj_add_flag(ui->Hot_Board_led_fan, LV_OBJ_FLAG_HIDDEN);
     lv_obj_remove_flag(ui->Hot_Board_led_fan, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_fan, LV_OBJ_FLAG_CLICK_FOCUSABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_fan, LV_OBJ_FLAG_CHECKABLE);
     lv_led_set_brightness(ui->Hot_Board_led_fan, 255);
-    lv_led_set_color(ui->Hot_Board_led_fan, lv_color_hex(0xff0027));
+    lv_led_set_color(ui->Hot_Board_led_fan, lv_color_hex(0x52ff00));
 
     //Write codes Hot_Board_led_tr
     ui->Hot_Board_led_tr = lv_led_create(ui->Hot_Board);
     lv_obj_set_pos(ui->Hot_Board_led_tr, 24, 111);
     lv_obj_set_size(ui->Hot_Board_led_tr, 5, 5);
+    lv_obj_add_flag(ui->Hot_Board_led_tr, LV_OBJ_FLAG_HIDDEN);
     lv_obj_remove_flag(ui->Hot_Board_led_tr, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_tr, LV_OBJ_FLAG_CLICK_FOCUSABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_tr, LV_OBJ_FLAG_CHECKABLE);
     lv_led_set_brightness(ui->Hot_Board_led_tr, 255);
-    lv_led_set_color(ui->Hot_Board_led_tr, lv_color_hex(0xff0027));
+    lv_led_set_color(ui->Hot_Board_led_tr, lv_color_hex(0x52ff00));
 
     //Write codes Hot_Board_led_sw
     ui->Hot_Board_led_sw = lv_led_create(ui->Hot_Board);
     lv_obj_set_pos(ui->Hot_Board_led_sw, 24, 84);
     lv_obj_set_size(ui->Hot_Board_led_sw, 5, 5);
+    lv_obj_add_flag(ui->Hot_Board_led_sw, LV_OBJ_FLAG_HIDDEN);
     lv_obj_remove_flag(ui->Hot_Board_led_sw, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_sw, LV_OBJ_FLAG_CLICK_FOCUSABLE);
     lv_obj_remove_flag(ui->Hot_Board_led_sw, LV_OBJ_FLAG_CHECKABLE);
     lv_led_set_brightness(ui->Hot_Board_led_sw, 255);
-    lv_led_set_color(ui->Hot_Board_led_sw, lv_color_hex(0xff0027));
+    lv_led_set_color(ui->Hot_Board_led_sw, lv_color_hex(0x52ff00));
 
     //Write codes Hot_Board_label_A
     ui->Hot_Board_label_A = lv_label_create(ui->Hot_Board);
@@ -502,6 +505,34 @@ void setup_scr_Hot_Board(lv_ui *ui)
     lv_obj_set_style_bg_grad_dir(ui->Hot_Board_btn_ext, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->Hot_Board_btn_ext, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
+        //Write codes Hot_Board_label_duty_time
+    ui->Hot_Board_label_duty_time = lv_label_create(ui->Hot_Board);
+    lv_obj_set_pos(ui->Hot_Board_label_duty_time, 199, 154);
+    lv_obj_set_size(ui->Hot_Board_label_duty_time, 50, 20);
+    lv_obj_remove_flag(ui->Hot_Board_label_duty_time, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_duty_time, LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_remove_flag(ui->Hot_Board_label_duty_time, LV_OBJ_FLAG_CHECKABLE);
+    lv_label_set_text(ui->Hot_Board_label_duty_time, "3000");
+    lv_label_set_long_mode(ui->Hot_Board_label_duty_time, LV_LABEL_LONG_WRAP);
+
+    //Write style for Hot_Board_label_duty_time, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->Hot_Board_label_duty_time, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui->Hot_Board_label_duty_time, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui->Hot_Board_label_duty_time, lv_color_hex(0x2195f6), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_side(ui->Hot_Board_label_duty_time, LV_BORDER_SIDE_TOP | LV_BORDER_SIDE_BOTTOM, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->Hot_Board_label_duty_time, 5, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->Hot_Board_label_duty_time, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->Hot_Board_label_duty_time, &lv_font_montserratMedium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->Hot_Board_label_duty_time, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->Hot_Board_label_duty_time, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->Hot_Board_label_duty_time, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->Hot_Board_label_duty_time, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->Hot_Board_label_duty_time, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     //The custom code of Hot_Board.
 
 

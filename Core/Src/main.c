@@ -84,7 +84,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -113,7 +113,9 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   /**** 关闭可控硅 ****/
-  // HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(FAN_CTR_GPIO_Port, FAN_CTR_Pin, GPIO_PIN_RESET);
+  HAL_Delay(1000);
+  HAL_GPIO_WritePin(FAN_CTR_GPIO_Port, FAN_CTR_Pin, GPIO_PIN_SET);
   /**** LED灯熄灭 ****/
   // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
   // HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);

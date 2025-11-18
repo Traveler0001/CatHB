@@ -11,11 +11,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/_intsup.h>
+// #include <sys/_intsup.h>
 #include "gui_guider.h"
 #include "lvgl.h"
 #include "hardware_list.h"
-#include "src/widgets/label/lv_label.h"
+// #include "src/widgets/label/lv_label.h"
 
 #if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
 #include "freemaster_client.h"
@@ -109,11 +109,22 @@ static void Hot_Board_btn_enter_event_handler (lv_event_t *e)
     case LV_EVENT_CLICKED:
     {
     
-        float temp_set = lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1);
-        htraic.tempCtr.temp_set = temp_set;
-        char* buf[10];
-        snprintf(buf, sizeof(buf), "%3.1f", temp_set/100.0);
+        // float temp_set = ;
+        // char* buf[10];
+        // htraic.tempCtr.temp_set = atof(lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1)) / 100.0f;
+        // snprintf(buf, sizeof(buf), "%3.1f", htraic.tempCtr.temp_set);
+        // lv_label_set_text(guider_ui.Hot_Board_label_setv_value, buf);
+
+        // float temp_set = lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1) / 100.0f;
+        // htraic.tempCtr.temp_set = temp_set;;
+        htraic.tempCtr.temp_set =  lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1) / 100.0f;
+        // TRAIC_SetTemp(htraic.tempCtr.temp_set);
+        char buf[10];
+        // snprintf(buf, sizeof(buf), "%3.1f", temp_set);
+        snprintf(buf, sizeof(buf), "%3.1f", htraic.tempCtr.temp_set);
         lv_label_set_text(guider_ui.Hot_Board_label_setv_value, buf);
+        // htraic.tempCtr.temp_set = lv_spinbox_get_value(guider_ui.Hot_Board_spinbox_1);
+        // lv_label_set_text(guider_ui.Hot_Board_label_setv_value, "%3.1F", &htraic.tempCtr.temp_set);
         break;
     }
     default:
@@ -138,7 +149,7 @@ static void Hot_Board_sw_start_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
-    case LV_EVENT_CLICKED:
+    case LV_EVENT_VALUE_CHANGED:
     {
         lv_obj_t * status_obj = lv_event_get_target(e);
         int status = lv_obj_has_state(status_obj, LV_STATE_CHECKED) ? true : false;
@@ -153,6 +164,7 @@ static void Hot_Board_sw_start_event_handler (lv_event_t *e)
         {
             htraic.traicStatus.TRAICENSTATUS = false;
             lv_obj_add_flag(guider_ui.Hot_Board_led_sw, LV_OBJ_FLAG_HIDDEN);
+            lv_led_set_color(guider_ui.Hot_Board_led_sw, lv_color_hex(0x52ff00));
             break;
         }
         default:
