@@ -19,7 +19,7 @@
             ]
         },
         {
-            "name": "CUBE1",
+            "name": "CatHB",
             "type": "stlinkgdbtarget",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -27,21 +27,7 @@
             "runEntry": "main",
             "imagesAndSymbols": [
                 {
-                    "imageFileName": "${workspaceFolder}/build/Debug/CUBEIDE1.elf"
-                }
-            ],
-            "verbose": false
-        },
-        {
-            "name": "CUBE1",
-            "type": "stlinkgdbtarget",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
-            "runEntry": "main",
-            "imagesAndSymbols": [
-                {
-                    "imageFileName": "${workspaceFolder}/build/Debug/CUBEIDE1.elf"
+                    "imageFileName": "${workspaceFolder}/build/Debug/CatHB.elf"
                 }
             ],
             "verbose": false

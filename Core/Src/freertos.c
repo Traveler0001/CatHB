@@ -19,12 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
-#include "Drivers/drv_max31865.h"
-#include "cmsis_os.h"
-#include "cmsis_os2.h"
-#include "main.h"
 #include "task.h"
-
+#include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -63,37 +60,41 @@ bool tempChangeFlag = 0;
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-    .name = "defaultTask",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for tasklvgl */
 osThreadId_t tasklvglHandle;
 const osThreadAttr_t tasklvgl_attributes = {
-    .name = "tasklvgl",
-    .stack_size = 3072 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "tasklvgl",
+  .stack_size = 3072 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for tasktempread */
 osThreadId_t tasktempreadHandle;
 const osThreadAttr_t tasktempread_attributes = {
-    .name = "tasktempread",
-    .stack_size = 300 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "tasktempread",
+  .stack_size = 300 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for tasktempctr */
 osThreadId_t tasktempctrHandle;
 const osThreadAttr_t tasktempctr_attributes = {
-    .name = "tasktempctr",
-    .stack_size = 350 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "tasktempctr",
+  .stack_size = 350 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for muteLVGL */
 osMutexId_t muteLVGLHandle;
-const osMutexAttr_t muteLVGL_attributes = {.name = "muteLVGL"};
+const osMutexAttr_t muteLVGL_attributes = {
+  .name = "muteLVGL"
+};
 /* Definitions for mutexMAX31865 */
 osMutexId_t mutexMAX31865Handle;
-const osMutexAttr_t mutexMAX31865_attributes = {.name = "mutexMAX31865"};
+const osMutexAttr_t mutexMAX31865_attributes = {
+  .name = "mutexMAX31865"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -133,10 +134,10 @@ void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName) {
 /* USER CODE END 4 */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
@@ -166,15 +167,13 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle =
-      osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of tasklvgl */
   tasklvglHandle = osThreadNew(taskLvgl, NULL, &tasklvgl_attributes);
 
   /* creation of tasktempread */
-  tasktempreadHandle =
-      osThreadNew(taskTempRead, NULL, &tasktempread_attributes);
+  tasktempreadHandle = osThreadNew(taskTempRead, NULL, &tasktempread_attributes);
 
   /* creation of tasktempctr */
   tasktempctrHandle = osThreadNew(taskTempCtr, NULL, &tasktempctr_attributes);
@@ -186,6 +185,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
+
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -195,7 +195,8 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument) {
+void StartDefaultTask(void *argument)
+{
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
@@ -218,7 +219,8 @@ void StartDefaultTask(void *argument) {
  * @retval None
  */
 /* USER CODE END Header_taskLvgl */
-void taskLvgl(void *argument) {
+void taskLvgl(void *argument)
+{
   /* USER CODE BEGIN taskLvgl */
   /* Infinite loop */
   for (;;) {
@@ -240,7 +242,8 @@ void taskLvgl(void *argument) {
  * @retval None
  */
 /* USER CODE END Header_taskTempRead */
-void taskTempRead(void *argument) {
+void taskTempRead(void *argument)
+{
   /* USER CODE BEGIN taskTempRead */
   static char intBuf[7]; // 整数位缓冲区（固定大小，全局复用）
   static char decBuf[4]; // 小数位缓冲区（固定大小，全局复用）
@@ -320,7 +323,8 @@ void taskTempRead(void *argument) {
  */
 
 /* USER CODE END Header_taskTempCtr */
-void taskTempCtr(void *argument) {
+void taskTempCtr(void *argument)
+{
   /* USER CODE BEGIN taskTempCtr */
   HAL_GPIO_WritePin(TRAIC_CTL_GPIO_Port, TRAIC_CTL_Pin, GPIO_PIN_RESET);
   // 初始化
@@ -379,3 +383,4 @@ void taskTempCtr(void *argument) {
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+
